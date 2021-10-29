@@ -11,9 +11,9 @@ import java.util.Random;
 public class Main {
     private static final Object monitor = new Object();
     private static Queue<Integer> queue = new ArrayDeque<>();
-    private static final int MAX_SIZE = 10;
+    private static final int MAX_SIZE = 6;
 
-    public static void produce() throws InterruptedException {
+    public void produce() throws InterruptedException {
         while (true) {
             synchronized (monitor) {
                 if (queue.size() == MAX_SIZE) {
@@ -24,10 +24,11 @@ public class Main {
                 queue.add(number);
                 monitor.notify();
             }
+            Thread.sleep(1000);
         }
     }
 
-    public static void consume() throws InterruptedException {
+    public void consume() throws InterruptedException {
         while (true) {
             synchronized (monitor) {
                 if (queue.size() == 0) {
@@ -38,14 +39,15 @@ public class Main {
                 System.out.println("Taken element: " + number + "\tQueue size: " + queue.size());
                 monitor.notify();
             }
-            Thread.sleep(1000);
+            Thread.sleep(100);
         }
     }
 
     public static void main(String[] args) {
+        Main m = new Main();
         Thread t1 = new Thread(() -> {
             try {
-                produce();
+                m.produce();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -53,7 +55,7 @@ public class Main {
 
         Thread t2 = new Thread(() -> {
             try {
-                consume();
+                m.consume();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

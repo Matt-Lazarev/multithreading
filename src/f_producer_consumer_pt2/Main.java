@@ -8,7 +8,9 @@ import java.util.concurrent.BlockingQueue;
 
 //1. Замена очереди на блокирующую очередь
 public class Main {
-    private static BlockingQueue<Integer> queue = new ArrayBlockingQueue<>(10);
+    private static BlockingQueue<Integer> queue =
+                            new ArrayBlockingQueue<>(7);
+
     public static void produce() throws InterruptedException {
         while (true) {
             queue.put(new Random().nextInt(100));
@@ -49,6 +51,5 @@ public class Main {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 }

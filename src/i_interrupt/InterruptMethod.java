@@ -8,7 +8,7 @@ public class InterruptMethod {
         Thread t = new Thread(InterruptMethod::infiniteMethod);
         t.start();
 
-        Thread.sleep(4000);
+        Thread.sleep(2000);
         t.interrupt();
 
         t.join();
@@ -28,7 +28,7 @@ public class InterruptMethod {
             try {
                 Thread.sleep(0);
             } catch (InterruptedException e) {
-                System.out.println("Interrupted " + i);
+                System.out.println("Iteration " + i );
                 break;
             }
         }

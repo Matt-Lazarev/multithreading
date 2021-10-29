@@ -41,15 +41,27 @@ class Task{
     public void first() throws InterruptedException {
         synchronized (monitor1){
             Thread.sleep(1000);
-            System.out.println("first");
-            second();;
+            System.out.println("before printSecond");
+            printSecond();;
         }
     }
     public void second() throws InterruptedException {
-        synchronized (monitor2){
+        synchronized (monitor1){
             Thread.sleep(1000);
+            System.out.println("before printFirst");
+            printFirst();
+        }
+    }
+
+    public void printSecond(){
+        synchronized (monitor2){
             System.out.println("second");
-            first();
+        }
+    }
+
+    public void printFirst(){
+        synchronized (monitor2){
+            System.out.println("first");
         }
     }
 }

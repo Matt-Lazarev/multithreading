@@ -9,23 +9,26 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LockExample {
 
     private static final Lock lock = new ReentrantLock(true);
-    static volatile int count;
+    static int count;
 
-    public static void increment(){
+    public static void increment() {
         lock.lock();
-        try { count++; }
-        finally { lock.unlock(); }
+        try {
+          count++;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public static void main(String[] args) {
-        Thread t1 = new Thread(()->{
-            for(int i=0; i<10_000; i++){
-                increment();;
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 10_000; i++) {
+                increment();
             }
         });
 
-        Thread t2 = new Thread(()->{
-            for(int i=0; i<10_000; i++){
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 10_000; i++) {
                 increment();
             }
         });

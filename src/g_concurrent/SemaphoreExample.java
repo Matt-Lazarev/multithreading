@@ -4,15 +4,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
-// 1. Ошибка кода - synchronized
-// 2. Почему не работает синхронизация
-// 3. Semaphore
-// 4. Ошибка подсчета коннектов
-// 5. Потенциальное исключение
+// 1. Semaphore
+// 2. Потенциальное исключение
+// 3. Ошибка подсчета
 public class SemaphoreExample {
     public static void main(String[] args) {
-        ExecutorService executor = Executors.newFixedThreadPool(1);
-        for(int i=0; i<1; i++){
+        ExecutorService executor = Executors.newFixedThreadPool(15);
+        for (int i = 0; i < 10; i++) {
             executor.execute(Connection::connect);
         }
 
@@ -32,21 +30,20 @@ class Connection {
             connectPrivate();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             semaphore.release();
         }
     }
 
     private static void connectPrivate() throws InterruptedException {
-        synchronized (Connection.class){
+        synchronized (Connection.class) {
             connections++;
             System.out.println("Current connections: " + connections);
         }
 
         Thread.sleep(2000);
 
-        synchronized (Connection.class){
+        synchronized (Connection.class) {
             connections--;
         }
     }

@@ -1,26 +1,43 @@
 package b_synch;
 
-//1. synchronized по объекту, по классу разными способами
-//2. Статический метод synchronized
-//3. Синхронизация по монитору
-public class Test2 {
-    public static void main(String[] args) {
-        Test2 t1 = new Test2();
-        Test2 t2 = new Test2();
+import java.util.concurrent.atomic.AtomicInteger;
 
-        Thread thread1 = new Thread(t1::work);
-        Thread thread2 = new Thread(t2::work);
+// 1. Проблемы кода: counter == 0
+// 2. Состояние гонки
+// 3. Исправление с помощью синхронизации
+// 4. Атомарные переменные
+public class Test2 {
+    private AtomicInteger counter = new AtomicInteger(0);
+
+    public static void main(String[] args) throws InterruptedException {
+        new Test2().count();
+    }
+
+    private void inc() {
+        counter.incrementAndGet();
+    }
+
+    public void count() throws InterruptedException {
+        Thread thread1 = new Thread(() -> {
+            for (int i = 0; i < 100_000; i++) {
+                inc();
+            }
+        });
+
+        Thread thread2 = new Thread(() -> {
+            for (int i = 0; i < 100_000; i++) {
+                inc();
+            }
+        });
 
         thread1.start();
         thread2.start();
+
+        thread1.join();
+        thread2.join();
+
+        System.out.println(counter);
     }
 
-    public void work() {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Work is done!");
-    }
+
 }

@@ -21,7 +21,7 @@ public class InterruptTimeout {
 
     }
 
-    private static boolean stop = false;
+    private static volatile boolean stop = false;
 
     public static void infiniteMethod() {
         long i = 0;

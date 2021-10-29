@@ -12,61 +12,61 @@ public class Account {
     private int balance;
 
     private static final Lock lock = new ReentrantLock();
-
     private static final Condition condition = lock.newCondition();
 
-    public Account(int balance){
+    public Account(int balance) {
         this.balance = balance;
     }
 
     public static void withdraw(Account from, int amount) {
         lock.lock();
-        try{
+        try {
             while (from.balance < amount) {
                 condition.await();
+            }
+
+            if(from.balance < 0){
+                System.out.println(from.balance);
             }
 
             from.balance -= amount;
 
         } catch (InterruptedException e) {
             e.printStackTrace();
-        } finally {
-            lock.unlock();
         }
+        lock.unlock();
     }
 
     public static void deposit(Account to, int amount) {
         lock.lock();
-        try {
-            to.balance += amount;
-            condition.signal();
-        }
-        finally {
-            lock.unlock();
-        }
+
+        to.balance += amount;
+        condition.signal();
+
+        lock.unlock();
     }
 
 
     public static void main(String[] args) {
         Account acc = new Account(100_000);
 
-        Thread t1 = new Thread(()->{
-            for(int i=0; i<10_000; i++)
-                Account.withdraw(acc, 50);
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1_000; i++)
+                Account.withdraw(acc, 500);
         });
 
-        Thread t2 = new Thread(()->{
-            for(int i=0; i<500_000; i++)
-                Account.deposit(acc, 1);
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 50_000; i++)
+                Account.deposit(acc, 10);
         });
 
         t1.start();
         t2.start();
 
-        try{
+        try {
             t1.join();
             t2.join();
-        } catch (InterruptedException ex){
+        } catch (InterruptedException ex) {
             System.out.println(ex);
         }
 

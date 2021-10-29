@@ -1,6 +1,8 @@
 package g_concurrent;
 
 
+import com.sun.jdi.ThreadReference;
+
 import java.util.Random;
 import java.util.concurrent.*;
 
@@ -15,10 +17,11 @@ public class CallableExample {
 
         Future<Integer> future =  executor.submit(()->{
             Random r = new Random();
-
-            if(r.nextInt() < 0)
-                throw new IllegalArgumentException("Error in call method");
-            return r.nextInt(100);
+            int sum = 0;
+            for(int i=0; i<5; i++){
+                sum += i;
+            }
+            return sum;
         });
 
         executor.shutdown();
@@ -26,10 +29,10 @@ public class CallableExample {
         int result = -1;
         try {
             result = future.get();
-        } catch (ExecutionException e) {
-            System.out.println("ExecutionException: " + e.getMessage());
         } catch (InterruptedException e){
             System.out.println(e.getMessage());
+        } catch (ExecutionException e){
+            System.out.println("ExecutionException: " + e.getMessage());
         }
         System.out.println("End with result " + result);
     }

@@ -17,10 +17,9 @@ public class DaemonThread {
         });
 
         thread.setDaemon(true);
-
         thread.start();
-
         Thread.sleep(500);
+
         System.out.println("\nThread main");
 
     }

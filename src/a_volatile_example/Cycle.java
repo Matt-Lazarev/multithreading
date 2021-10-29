@@ -5,9 +5,10 @@ public class Cycle {
     public static void main(String[] args) throws InterruptedException {
         MyThread thread = new MyThread();
         thread.start();
+
         Thread.sleep(2000);
 
-        new Thread(thread::stopThread).start();
+        new Thread(() -> thread.stopThread()).start();
     }
 }
 
@@ -17,7 +18,8 @@ class MyThread extends Thread {
     public void run() {
         int j = 0;
         while (!stop) {
-            System.out.println("Iteration: " + j);
+            if(j % 100_000_000 == 0)
+                System.out.println("Iteration: " + j);
             j++;
         }
     }
